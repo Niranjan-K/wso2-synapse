@@ -134,6 +134,11 @@ public class JmsConsumer implements MessageConsumer {
         return result;
     }
 
+    //ToDo: Implementation required
+    public boolean nack() {
+        return false;
+    }
+
     public boolean cleanup() {
         if (logger.isDebugEnabled()) {
             logger.debug(getId() + " cleaning up...");

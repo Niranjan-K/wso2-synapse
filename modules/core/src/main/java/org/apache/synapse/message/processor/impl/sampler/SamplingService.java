@@ -185,12 +185,7 @@ public class SamplingService implements Task, ManagedLifecycle {
 	 *         store.
 	 */
 	public MessageContext fetch(MessageConsumer msgConsumer) {
-		MessageContext newMsg = messageConsumer.receive();
-		if (newMsg != null) {
-			messageConsumer.ack();
-		}
-
-		return newMsg;
+		return messageConsumer.receive();
 	}
 
 	/**
@@ -209,6 +204,13 @@ public class SamplingService implements Task, ManagedLifecycle {
                     Mediator processingSequence = messageContext.getSequence(sequence);
                     if (processingSequence != null) {
                         processingSequence.mediate(messageContext);
+                        if (messageContext.getProperty("SET_ROLLBACK_ONLY") != null &&
+                                messageContext.getProperty("SET_ROLLBACK_ONLY") instanceof Boolean
+                                && Boolean.parseBoolean(messageContext.getProperty("SET_ROLLBACK_ONLY").toString())) {
+							messageConsumer.nack();
+                        } else {
+                            messageConsumer.ack();
+                        }
                     }
                 } catch (SynapseException syne) {
                     if (!messageContext.getFaultStack().isEmpty()) {

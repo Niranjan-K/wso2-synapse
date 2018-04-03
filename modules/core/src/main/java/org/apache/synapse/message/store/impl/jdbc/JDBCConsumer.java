@@ -94,6 +94,12 @@ public class JDBCConsumer implements MessageConsumer {
         }
     }
 
+    @Override
+    //ToDo: Implementation required
+    public boolean nack() {
+        return false;
+    }
+
     /**
      * Cleanup the consumer
      *

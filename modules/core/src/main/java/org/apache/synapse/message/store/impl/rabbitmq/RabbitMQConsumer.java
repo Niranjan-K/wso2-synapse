@@ -142,6 +142,14 @@ public class RabbitMQConsumer implements MessageConsumer {
 		return result;
 	}
 
+	public boolean nack() {
+		boolean result = cachedMessage.nack();
+		if (!result) {
+			store.dequeued();
+		}
+		return result;
+	}
+
 	public boolean cleanup() {
 		if (logger.isDebugEnabled()) {
 			logger.debug(getId() + " cleaning up...");
@@ -260,6 +268,19 @@ public class RabbitMQConsumer implements MessageConsumer {
 				} catch (IOException e) {
 					logger.error(getId() + " cannot ack last read message. Error:"
 					             + e.getLocalizedMessage(), e);
+					return false;
+				}
+			}
+			return false;
+		}
+
+		public boolean nack() {
+			if (message != null && channel != null && channel.isOpen()) {
+				try {
+					channel.basicNack(message.getEnvelope().getDeliveryTag(), false, true);
+					return true;
+				} catch (IOException e) {
+					logger.error (getId() + " cannot nack last read message. Error: " + e.getLocalizedMessage(), e);
 					return false;
 				}
 			}

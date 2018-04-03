@@ -34,6 +34,12 @@ public interface MessageConsumer {
     boolean ack();
 
     /**
+     * Put the last message received back to the queue so that it will be retrieved by the store again.
+     * @return {@code true} if the negative acknowledgement is successful. {@code false} otherwise.
+     */
+    boolean nack();
+
+    /**
      * Cleans up this message consumer
      * @return {@code true} if cleanup is successful, {@code false} otherwise.
      */

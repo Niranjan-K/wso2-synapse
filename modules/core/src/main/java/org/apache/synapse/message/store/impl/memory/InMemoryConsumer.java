@@ -72,6 +72,11 @@ public class InMemoryConsumer implements MessageConsumer {
         return true;
     }
 
+    //ToDo: Implementation required
+    public boolean nack() {
+        return false;
+    }
+
     public boolean cleanup() {
         if (logger.isDebugEnabled()) {
             logger.debug(getId() + " cleanup");
